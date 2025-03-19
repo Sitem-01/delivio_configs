@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: abbassiowl/postgres:shared
+    platform: linux/arm64  # Ensure compatibility with M1 Mac
+    container_name: postgresDB
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: delivio
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+  delivio_backend:
+    image: abbassiowl/delivio_backend:userapi
+    container_name: delivio_backend
+    depends_on:
+      - postgres  # Ensure the database starts first
+    environment:
+      DATABASE_URL: "postgresql://postgres:root@postgresDB:5432/delivio"
+    ports:
+      - "5000:5000"
+    networks:
+      - my_network
+    volumes:
+      - .env:/delivio_backend/.env
+
+volumes:
+  pg_data:
+    driver: local
+
+networks:
+  my_network:
+    driver: bridge
