@@ -17,7 +17,7 @@ services:
       - my_network
 
   delivio_backend:
-    image: abbassiowl/delivio_backend:userapi
+    image: abbassiowl/delivio_backend:latestupdated
     container_name: delivio_backend
     depends_on:
       - postgres  # Ensure the database starts first
